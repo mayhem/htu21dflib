@@ -253,39 +253,35 @@ int main(int argc, char *argv[])
         i2c_devname = argv[1];
     }
 
-    printf("opening %s\n", i2c_devname);
     i2cfd = i2c_open(i2c_devname);
     if (i2cfd < 0) {
-        printf("i2c_open(%s) failed %d\n", i2c_devname, i2cfd);
+        printf("#i2c_open(%s) failed %d\n", i2c_devname, i2cfd);
         return -1;
     }
 
     rc = htu21df_init(i2cfd, I2CADDR);
     if (rc < 0) {
-        printf("i2c_init failed %d\n", rc);
+        printf("#i2c_init failed %d\n", rc);
         return -2;
     }
 
-    for (i = 0; i < 100; i++) {
-        rc = htu21df_read_temperature(i2cfd, &temperature);
-        if (rc < 0) {
-            printf("i2c_read_temperature failed %d\n", rc);
-            return -3;
-        }
-
-        rc = htu21df_read_humidity(i2cfd, &humidity);
-        if (rc < 0) {
-            printf("i2c_read_humidity failed %d\n", rc);
-            return -4;
-        }
-
-        printf("%.1f %.1f\n", temperature, humidity);
-        sleep(1);
+    rc = htu21df_read_temperature(i2cfd, &temperature);
+    if (rc < 0) {
+        printf("#i2c_read_temperature failed %d\n", rc);
+        return -3;
     }
+
+    rc = htu21df_read_humidity(i2cfd, &humidity);
+    if (rc < 0) {
+        printf("#i2c_read_humidity failed %d\n", rc);
+        return -4;
+    }
+
+    printf("%.1f %.1f\n", temperature, humidity);
 
     rc = i2c_close(i2cfd);
     if (rc < 0) {
-        printf("i2c_close failed %d\n", rc);
+        printf("#i2c_close failed %d\n", rc);
         return -5;
     }
     return 0;
